@@ -48,6 +48,19 @@ def get_args_by_task_model(task, sub_task, model_tag):
             trg_len = 240
         epoch = 50
         patience = 5
+    elif task == 'CoditT5':
+        # small: Read 46680 examples, avg src len: 31, avg trg len: 28, max src len: 50, max trg len: 50
+        # [TOKENIZE] avg src len: 50, avg trg len: 45, max src len: 129, max trg len: 121
+        # medium:  Read 52364 examples, avg src len: 74, avg trg len: 73, max src len: 100, max trg len: 100
+        # [TOKENIZE] avg src len: 117, avg trg len: 114, max src len: 238, max trg len: 238
+        if sub_task == 'bf-small':
+            src_len = 130
+            trg_len = 120
+        elif sub_task == 'bf-medium':
+            src_len = 240
+            trg_len = 240
+        epoch = 50
+        patience = 5
     elif task == 'concode':
         # Read 100000 examples, avg src len: 71, avg trg len: 26, max src len: 567, max trg len: 140
         # [TOKENIZE] avg src len: 213, avg trg len: 33, max src len: 2246, max trg len: 264
@@ -72,8 +85,8 @@ def get_args_by_task_model(task, sub_task, model_tag):
 
     if 'codet5_small' in model_tag:
         bs = 32
-        if task == 'summarize' or task == 'translate' or (task == 'refine' and sub_task == 'small'):
-            bs = 64
+        if task == 'summarize' or task == 'translate' or (task == 'refine' and sub_task == 'small') or task == 'CoditT5':
+            bs = 8 # [JH] bs = 64 -> 4 : RuntimeError: CUDA out of memory
         elif task == 'clone':
             bs = 25
     elif 'codet5_large' in model_tag:
@@ -136,6 +149,8 @@ def get_sub_tasks(task):
         sub_tasks = ['java-cs', 'cs-java']
     elif task == 'refine':
         sub_tasks = ['small', 'medium']
+    elif task == 'CoditT5':
+        sub_tasks = ['bf-small', 'bf-medium', 'code-review', 'comment-update']
     elif task in ['concode', 'defect', 'clone', 'multi_task']:
         sub_tasks = ['none']
     return sub_tasks
@@ -146,7 +161,7 @@ if __name__ == '__main__':
     parser.add_argument("--model_tag", type=str, default='codet5_base',
                         choices=['roberta', 'codebert', 'bart_base', 'codet5_small', 'codet5_base', 'codet5_large'])
     parser.add_argument("--task", type=str, default='summarize', choices=['summarize', 'concode', 'translate',
-                                                                          'refine', 'defect', 'clone', 'multi_task'])
+                                                                          'refine', 'defect', 'clone', 'multi_task', 'CoditT5'])
     parser.add_argument("--sub_task", type=str, default='ruby')
     parser.add_argument("--res_dir", type=str, default='results', help='directory to save fine-tuning results')
     parser.add_argument("--model_dir", type=str, default='saved_models', help='directory to save fine-tuned models')

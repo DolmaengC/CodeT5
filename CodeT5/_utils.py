@@ -209,6 +209,27 @@ def read_refine_examples(filename, data_num):
                 break
     return examples
 
+def read_CoditT5_examples(filename, data_num):
+    """Read examples from filename."""
+    examples = []
+    assert len(filename.split(',')) == 2
+    src_filename = filename.split(',')[0]
+    trg_filename = filename.split(',')[1]
+    idx = 0
+
+    with open(src_filename) as f1, open(trg_filename) as f2:
+        for line1, line2 in zip(f1, f2):
+            examples.append(
+                Example(
+                    idx=idx,
+                    source=line1.strip(),
+                    target=line2.strip(),
+                )
+            )
+            idx += 1
+            if idx == data_num:
+                break
+    return examples
 
 def read_concode_examples(filename, data_num):
     """Read examples from filename."""

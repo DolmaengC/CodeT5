@@ -150,7 +150,7 @@ def eval_bleu_epoch(args, eval_data, eval_examples, model, tokenizer, split_tag,
             bleu = round(smooth_bleu.bleuFromMaps(goldMap, predictionMap)[0], 2)
         else:
             bleu = round(_bleu(gold_fn, output_fn), 2)
-            if args.task in ['concode', 'translate', 'refine']:
+            if args.task in ['concode', 'translate', 'refine', 'CoditT5']: # [JH] add CoditT5 task
                 codebleu = calc_code_bleu.get_codebleu(gold_fn, output_fn, args.lang)
 
         result = {'em': np.mean(dev_accs) * 100, 'bleu': bleu}
@@ -363,7 +363,8 @@ def main():
         logger.info("  Batch size = %d", args.eval_batch_size)
 
         for criteria in ['best-bleu']:
-            file = os.path.join(args.output_dir, 'checkpoint-{}/pytorch_model.bin'.format(criteria))
+            # file = os.path.join(args.output_dir, 'checkpoint-{}/pytorch_model.bin'.format(criteria))
+            file = "/home/jun4161/capstone/CodeT5/CodeT5/sh/saved_models/CoditT5/bf-small/codet5_small_all_lr5_bs8_src130_trg120_pat5_e50/checkpoint-best-ppl/pytorch_model.bin"
             logger.info("Reload model from {}".format(file))
             model.load_state_dict(torch.load(file))
             eval_examples, eval_data = load_and_cache_gen_data(args, args.test_filename, pool, tokenizer, 'test',

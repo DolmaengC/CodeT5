@@ -185,6 +185,11 @@ def get_filenames(data_root, task, sub_task, split=''):
         train_fn = '{}/train.buggy-fixed.buggy,{}/train.buggy-fixed.fixed'.format(data_dir, data_dir)
         dev_fn = '{}/valid.buggy-fixed.buggy,{}/valid.buggy-fixed.fixed'.format(data_dir, data_dir)
         test_fn = '{}/test.buggy-fixed.buggy,{}/test.buggy-fixed.fixed'.format(data_dir, data_dir)
+    elif task == 'CoditT5':
+        data_dir = '{}/{}/{}'.format(data_root, task, sub_task)
+        train_fn = '{}/train.CoditT5.buggy,{}/train.CoditT5.fixed'.format(data_dir, data_dir)
+        dev_fn = '{}/valid.CoditT5.buggy,{}/valid.CoditT5.fixed'.format(data_dir, data_dir)
+        test_fn = '{}/test.CoditT5.buggy,{}/test.CoditT5.fixed'.format(data_dir, data_dir)
     elif task == 'translate':
         data_dir = '{}/{}'.format(data_root, task)
         if sub_task == 'cs-java':
@@ -223,6 +228,7 @@ def read_examples(filename, data_num, task):
         'concode': read_concode_examples,
         'clone': read_clone_examples,
         'defect': read_defect_examples,
+        'CoditT5': read_CoditT5_examples, # [JH] For CoditT5
     }
     return read_example_dict[task](filename, data_num)
 

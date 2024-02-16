@@ -1,5 +1,7 @@
-WORKDIR="your_CodeT5_path/CodeT5"
-export PYTHONPATH=$WORKDIR
+WORKDIR="/home/jun4161/capstone/CodeT5/CodeT5"
+WORKDIR2="/home/jun4161/capstone/CodeT5"
+export PYTHONPATH=$WORKDIR:$PYTHONPATH
+export PYTHONPATH=$WORKDIR2:$PYTHONPATH
 
 TASK=${1}
 SUB_TASK=${2}
@@ -84,7 +86,7 @@ fi
 
 CUDA_VISIBLE_DEVICES=${GPU} \
   python ${RUN_FN}  ${MULTI_TASK_AUG}   \
-  --do_train --do_eval --do_eval_bleu --do_test  \
+  --do_test  \
   --task ${TASK} --sub_task ${SUB_TASK} --model_type ${MODEL_TYPE} --data_num ${DATA_NUM}  \
   --num_train_epochs ${EPOCH} --warmup_steps ${WARMUP} --learning_rate ${LR}e-5 --patience ${PATIENCE} \
   --tokenizer_name=${TOKENIZER}  --model_name_or_path=${MODEL_PATH} --data_dir ${WORKDIR}/data  \
